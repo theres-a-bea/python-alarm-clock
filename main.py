@@ -1,31 +1,39 @@
-import keyboard
 import os
+import pygame
+import RPi.GPIO as GPIO
+import time
 import random
-from pygame import mixer
 
-mixer.init()
-tunedirectory = "wakeuptunes"
-pathDelim = "\\"
+tunedirectory = "/alarm/wakeuptunes"
+pathDelim = "/"
+pin = 17
 
-def isInputPressed():
-    if keyboard.is_pressed('m'):
-        return 1
-    else:
-        return 0
+pygame.mixermixer.init()
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(pin, GPIO.IN)
+
+def getGPIO(pin):
+        poll = GPIO.input(pin)
+        time.sleep(0.05)
+        poll = poll + GPIO.input(pin)
+        if poll == 0:
+                return 0
+        else:
+                return 1
 
 tunes = os.listdir(tunedirectory)
 tuneInt = random.randint(0, (len(tunes)-1))
 tune = tunedirectory + pathDelim + tunes[tuneInt]
 tunepath = os.path.abspath(tune)
 
-mixer.music.load(tunepath)
+pygame.mixer.music.load(tunepath)
 
-mixer.music.play()
+pygame.mixer.music.play()
 
 while True:
-    terminate = isInputPressed()
+    terminate = getGPIO(pin)
     if terminate == 1:
-        mixer.music.stop()
+        pygame.mixer.music.stop()
         break
     else:
         continue
