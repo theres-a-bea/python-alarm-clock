@@ -5,21 +5,27 @@ import random
 tunedirectory = "/alarm/wakeuptunes"
 pathDelim = "/"
 
+def getGPIO():
+    f = open('/alarm/gpio','r')
+    state = f.readline()
+    f.close()
+    return state
+
 tunes = os.listdir(tunedirectory)
-print(tunes)
 tuneInt = random.randint(0, (len(tunes)-1))
 tune = tunes[tuneInt]
-print(tune)
 tunepath = tunedirectory + pathDelim + tune
-print(tunepath)
 
-p = vlc.MediaPlayer(tune)
+p = vlc.MediaPlayer(tunepath)
+
 p.play()
 
 while True:
-    terminate = getGPIO(pin)
-    if terminate == 1:
+    terminate = getGPIO()
+    if terminate == str(0):
         p.stop()
         break
     else:
         continue
+
+f.close()
